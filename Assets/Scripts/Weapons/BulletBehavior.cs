@@ -3,40 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/*
- * collision event with player
- * collision event with enemy
- * collision event with other surfaces
- *
- * destroy bullet after some time laying still
- * 
-*/
 
 public class BulletBehavior : MonoBehaviour
 {
-    /* don't want bullets to be destroyed
-    void Update()
-    {
-        //destroys bullet after it stops
-        if (gameObject.GetComponent<Rigidbody>().velocity == Vector3.zero)
-            Destroy(gameObject, destroyAfter);
-            
-    }
-    */
-    
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision other)
     {
         //player impact
-        if (collision.transform.tag == "Player")
+        if (other.transform.tag == "Player")
         {
             Debug.Log("Hit Player");
-            PlayerEventManager.OnDie.Invoke();
+            PlayerEventManager.onShot.Invoke();
         }
         //enemy impact
-        else if (collision.transform.tag == "Enemy")
+        else if (other.gameObject.tag == "Enemy")
         {
             Debug.Log("Hit Enemy");
-            collision.transform.GetComponent<EnemyEventManager>().OnDie.Invoke();
+            other.gameObject.GetComponentInParent<EnemyEventManager>().onBeingShot.Invoke();
         }
         else
         {

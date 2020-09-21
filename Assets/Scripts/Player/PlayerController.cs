@@ -7,6 +7,9 @@ public class PlayerController : MonoBehaviour
 {
     public CharacterController Controller;
     public float speed = 12f;
+
+    [SerializeField]
+    private GameObject weapon; 
     
     public float gravity = -9.81f;
     public float jumpHeight = 3f;
@@ -14,9 +17,11 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        //equip possible weapon
-        transform.Find("Weapon").GetChild(1)
-
+       //equip possible weapon
+        if (weapon != null)
+        {
+            weapon.transform.Find("Rifle").GetComponent<Fire>().Equip(gameObject);
+        }
     }
 
     void Update()
@@ -30,9 +35,8 @@ public class PlayerController : MonoBehaviour
         if (Controller.isGrounded && velocity.y < 0)
             velocity.y = -2f;
 
-        if (Input.GetButtonDown("Jump") && Controller.isGrounded)
+        if (Input.GetKeyDown("o") && Controller.isGrounded)
         {
-            Debug.Log("Jumped");
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 

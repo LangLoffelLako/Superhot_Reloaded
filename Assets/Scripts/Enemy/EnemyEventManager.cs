@@ -6,26 +6,33 @@ using UnityEngine.Events;
 
 public class EnemyEventManager : MonoBehaviour
 {
-    public UnityEvent OnDie;
-    public UnityEvent OnFire;
+    public UnityEvent onBeingShot;
+    public UnityEvent onFire;
 
     void OnEnable()
     {
-        if (OnDie == null)
+        if (onBeingShot == null)
         {
-            OnDie = new UnityEvent();
-            OnDie.AddListener(Die);
+            onBeingShot = new UnityEvent();
         }
-
-        if (OnFire == null)
+        
+        if (onFire == null)
         {
-            OnFire = new UnityEvent();
+            onFire = new UnityEvent();
         }
     }
 
-    public void Die()
+    private void Start()
     {
+        if (onBeingShot != null)
+        {
+            onBeingShot.AddListener(Die);
+        }
+    }
+
+    private void Die()
+    {
+        UIManager.enemiesKilled += 1;
         Destroy(gameObject);
     }
-
 }

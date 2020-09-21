@@ -5,33 +5,49 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class EnemyController : MonoBehaviour
 {
-    public Transform target;
-
+    [Header("Navigation")]
     [SerializeField] private float minDistance = 10f;
     [SerializeField] private float angularSpeed = 120f;
     [SerializeField] private float maxWeaponAngle = 30f;
     private NavMeshAgent navigator;
-    private Transform weapon;
-
-    // Start is called before the first frame update
+    
+    [Header("Equipped Weapon")]
+    [SerializeField] private GameObject weapon;
+    
+    [Header("Respawn")]
+    public bool willRespawn = false;
+    
+    private GameObject target;
+    
     void Start()
     {
         //setting variables
-        if (navigator == null) 
+        if (navigator == null)
+        {
             navigator = GetComponent<NavMeshAgent>();
-        
+        }
+
         //equip possible weapon
-        weapon = transform.Find("Weapon");
-        weapon.GetChild(1).Equip(gameObject);
+        if (weapon != null)
+        {
+            weapon.transform.Find("Rifle").GetComponent<Fire>().Equip(gameObject);
+            //weapon.GetChild(1).GetComponent<Fire>().Equip(gameObject);
+        }
+
+        if (target == null)
+        {
+            target = GameObject.FindWithTag("Player");
+        }
     }
 
     void FixedUpdate()
     {
         RaycastHit hit;
-        Vector3 direction = target.position - transform.position;
+        Vector3 direction = target.transform.position - transform.position;
         
         //enemy checking, if he sees the player
         if (Physics.Raycast(transform.position, direction, out hit, Mathf.Infinity))
@@ -39,7 +55,7 @@ public class EnemyController : MonoBehaviour
             if (hit.collider.tag == "Player")
             {
                 //Movement
-                navigator.destination = target.position;
+                navigator.destination = target.transform.position;
                     
                 if (hit.distance >= minDistance)
                 {
@@ -50,9 +66,7 @@ public class EnemyController : MonoBehaviour
                     navigator.isStopped = true;
                 } 
                 //Shooting
-                GetComponent<EnemyEventManager>().OnFire.Invoke();
-                
-                Debug.Log("Destination: " + navigator.destination+ " target: " + target.position);
+                GetComponent<EnemyEventManager>().onFire.Invoke();
             }
             else
             {
@@ -68,14 +82,23 @@ public class EnemyController : MonoBehaviour
         
     }
 
-    private void TurnToPos(Vector3 direction,Transform Target)
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.transform.tag == "Player")
+        {
+            Debug.Log("Hit Player");
+            PlayerEventManager.onShot.Invoke();
+        }
+    }
+
+    private void TurnToPos(Vector3 direction, GameObject Target)
     {
         Vector3 angle = direction - transform.forward;
         transform.Rotate(Vector3.up,angle.y * Time.deltaTime * angularSpeed);
 
-        Quaternion weaponAngle = Quaternion.Euler(target.position - weapon.position);
+        Quaternion weaponAngle = Quaternion.Euler(Target.transform.position - weapon.transform.position);
 
-        weapon.localRotation = (weaponAngle);
+        weapon.transform.localRotation = (weaponAngle);
     }
 
 }

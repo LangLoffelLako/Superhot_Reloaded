@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: -8528690729112857301}
   m_Layer: 0
   m_Name: PlayerCharacter
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -145,6 +145,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Controller: {fileID: 2401510965256462125}
   speed: 12
+  weapon: {fileID: 283398961340260974}
   gravity: -9.81
   jumpHeight: 3
 --- !u!114 &3245319344485808698
@@ -160,6 +161,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Controller: {fileID: 2401510965256462125}
+  standardTime: 1
+  freezeTime: 0
+  timeGradient: 0.1
 --- !u!114 &-8528690729112857301
 MonoBehaviour:
   m_ObjectHideFlags: 0

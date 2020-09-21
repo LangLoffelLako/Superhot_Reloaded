@@ -120,7 +120,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3985386164644027537}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.6}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5338669905939485328}
@@ -171,8 +171,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba5551a3010cc24b8a8d5a7086827a97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponHeld: 1
   prefabBullet: {fileID: 8993760231375533731, guid: 3788e7d9cc2b9997395e65e61bb1625c, type: 3}
   bulletSpawnPoint: {fileID: 1164246299871410320}
-  fireRate: 5
-  bulletImpuls: 6.4
+  fireRate: 1
+  bulletImpuls: 2
+  loadupTruce: 2
+  shot: 0

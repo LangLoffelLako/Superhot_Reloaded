@@ -8,35 +8,34 @@ using UnityEngine.Events;
 
 public class Fire : MonoBehaviour
 {
-    public bool weaponHeld;
-    
     [Header("Bullets & Spawn Point")]
     public GameObject prefabBullet;
     public Transform bulletSpawnPoint;
     
     [Header("Firearm Characteristic")]
-    [SerializeField]
-    private int fireRate = 2;
-    [SerializeField]
-    private float bulletImpuls = 6.4f;
+    [SerializeField] private float fireRate = 2f;
+    [SerializeField] private float bulletImpuls = 6.4f;
 
-    private bool shot;
+    private float _loadupTruce;
+
+    public bool shot;
     private GameObject bullet;
 
     private void Start()
     {
-        
+        _loadupTruce = GameObject.FindWithTag("Player").GetComponent<TimeFreeze>().loadupTruce;
+        StartCoroutine(FirePause(_loadupTruce));
     }
-
+    
     public void Equip(GameObject Equipper)
     {
         if (Equipper.tag == "Player")
         {
-            PlayerEventManager.OnFire.AddListener(FireBullet);
+            PlayerEventManager.onFire.AddListener(FireBullet);
         }
         else if (Equipper.tag == "Enemy")
         {
-            Equipper.GetComponent<EnemyEventManager>().OnFire.AddListener(FireBullet);
+            Equipper.GetComponent<EnemyEventManager>().onFire.AddListener(FireBullet);
         }
     }
     private void FireBullet()
@@ -47,19 +46,19 @@ public class Fire : MonoBehaviour
             Quaternion shootDirection = bulletSpawnPoint.rotation;
 
             //spawn bullet
-            bullet = Instantiate(prefabBullet, spawnPoint, shootDirection);
+            bullet = Instantiate(original: prefabBullet, position: spawnPoint, rotation: shootDirection); //, parent: bulletSpawnPoint);
 
             //shoot bullet
             Vector3 force = bulletImpuls * bullet.transform.forward.normalized;
             bullet.GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
 
-            StartCoroutine(FirePause());
+            StartCoroutine(FirePause(1/fireRate));
         }
     }
-    private IEnumerator FirePause ()
+    public IEnumerator FirePause (float pauseLength)
     {
         shot = true;
-        yield return new WaitForSeconds(1 / fireRate);
+        yield return new WaitForSeconds(pauseLength);
         shot = false;
     }
 }

@@ -100,6 +100,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f26b80ddde909c492ba49db760c55bed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnDie:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFire:
+    m_PersistentCalls:
+      m_Calls: []
+  enemyPrefab: {fileID: 6159431542922248156}
+  willRespawn: 1
+  respawnTime: 1
 --- !u!114 &2649724816163367182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,10 +121,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 089c0b48d8455efb485aafcd513b52a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
   minDistance: 10
   angularSpeed: 120
   maxWeaponAngle: 30
+  weapon: {fileID: 8631015644713763473}
 --- !u!1 &8615301094887324106
 GameObject:
   m_ObjectHideFlags: 0
@@ -130,7 +139,7 @@ GameObject:
   - component: {fileID: 971241480431704525}
   m_Layer: 2
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -208,8 +217,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.7
-  m_Height: 1.8
+  m_Radius: 0.5
+  m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8631015644713763473
@@ -223,7 +232,7 @@ GameObject:
   - component: {fileID: 5055389784307686614}
   m_Layer: 2
   m_Name: Weapon
-  m_TagString: Player
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

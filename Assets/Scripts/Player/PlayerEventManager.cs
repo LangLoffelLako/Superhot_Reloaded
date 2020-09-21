@@ -6,20 +6,44 @@ using UnityEngine.Events;
 
 public class PlayerEventManager : MonoBehaviour
 {
-   public static UnityEvent OnDie;
-   public static UnityEvent OnFire;
+   public static UnityEvent onShot;
+   public static UnityEvent onFire;
+   public static UnityEvent onDefeatedEnemies;
 
-   void OnEnable()
+   public static bool isGameOver = false;
+   private GameObject remainingEnemy;
+
+   private void OnEnable()
    {
-      if (OnDie == null)
+      if (onShot == null)
       {
-         OnDie = new UnityEvent();
-         OnDie.AddListener(Die);
+         onShot = new UnityEvent();
+      }
+      
+      if (onFire == null)
+      {
+         onFire = new UnityEvent();
       }
 
-      if (OnFire == null)
+      if (onDefeatedEnemies == null)
       {
-         OnFire = new UnityEvent();
+         onDefeatedEnemies = new UnityEvent();
+      }
+   }
+
+   private void Start()
+   {
+      onShot.AddListener(GameOver);
+      onDefeatedEnemies.AddListener(GameOver);
+   }
+
+   private void Update()
+   {
+      remainingEnemy = GameObject.FindWithTag("Enemy");
+      if (remainingEnemy == null)
+      {
+         Debug.Log("You won!");
+         onDefeatedEnemies.Invoke();
       }
    }
 
@@ -28,12 +52,21 @@ public class PlayerEventManager : MonoBehaviour
       //Fire gun, if attached
       if (Input.GetButton("Fire1"))
       {
-         OnFire.Invoke();
+         if (onFire != null)
+            onFire.Invoke();
       }
    }
 
-   public void Die()
+   private void GameOver()
    {
-      Debug.Log("You Died");
+      if (!isGameOver)
+      {
+         isGameOver = true;
+      }
+   }
+
+   private void Continue()
+   {
+      isGameOver = false;
    }
 }
