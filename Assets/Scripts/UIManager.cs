@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +11,9 @@ public class UIManager : MonoBehaviour
     public GameObject defeatedEnemiesText;
     public GameObject countdown;
     public GameObject hitscore;
+    public GameObject deathscore;
     public static int enemiesKilled = 0;
+    public static int shotsTaken = 0;
     [SerializeField] private float timedTextDuration = 2f;
 
     private void Start()
@@ -48,17 +47,27 @@ public class UIManager : MonoBehaviour
         {
             hitscore = SetText();
         }
+        
+        if (deathscore == null)
+        {
+            deathscore = SetText();
+        }
 
         gameOverText.SetActive(false);
         shotText.SetActive(false);
         wonText.SetActive(false);
         defeatedEnemiesText.SetActive(false);
         hitscore.SetActive(false);
+        deathscore.SetActive(false);
 
         StartCoroutine(TimeCountdown());
 
-        PlayerEventManager.onShot.AddListener(delegate{ DisplayText(gameOverText);});
-        PlayerEventManager.onShot.AddListener(delegate {DisplayTimedText(shotText);});
+        if (GameObject.FindWithTag("Player").GetComponent<PlayerEventManager>().roomNumber == 1)
+        {
+            PlayerEventManager.onShot.AddListener(delegate { DisplayText(gameOverText); });
+            PlayerEventManager.onShot.AddListener(delegate { DisplayTimedText(shotText); });
+        }
+
         PlayerEventManager.onDefeatedEnemies.AddListener(delegate {DisplayText(wonText);});
         PlayerEventManager.onDefeatedEnemies.AddListener(delegate {DisplayTimedText(defeatedEnemiesText);});
     }
@@ -66,6 +75,7 @@ public class UIManager : MonoBehaviour
     private void Update()
     {
         hitscore.GetComponent<Text>().text = "You killed " + enemiesKilled + " enemy";
+        deathscore.GetComponent<Text>().text = "You took " + shotsTaken + " shots";
     }
 
 
@@ -97,9 +107,10 @@ public class UIManager : MonoBehaviour
 
     private IEnumerator TimeCountdown()
     {
+        Debug.Log("Countdown Coroutine");
         int count = 0;
-        float truceTime = GameObject.FindWithTag("Player").GetComponent<TimeFreeze>().loadupTruce;
-        while (count < truceTime)
+        float truceTime = TimeFreeze.loadupTruce;
+        while (count < 2)
         {
             float time = truceTime - count;
             countdown.GetComponent<Text>().text = "Game starts in: " + time + " seconds";
@@ -108,5 +119,6 @@ public class UIManager : MonoBehaviour
         }
         countdown.SetActive(false);
         hitscore.SetActive(true);
+        deathscore.SetActive(true);
     }
 }

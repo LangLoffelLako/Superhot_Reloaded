@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using UnityEditor;
+﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class Fire : MonoBehaviour
 {
@@ -16,15 +11,20 @@ public class Fire : MonoBehaviour
     [SerializeField] private float fireRate = 2f;
     [SerializeField] private float bulletImpuls = 6.4f;
 
-    private float _loadupTruce;
+    private float loadupTruce;
 
     public bool shot;
     private GameObject bullet;
 
+    [Header("Audio")] 
+    public AudioSource shootAudio; 
+    public AudioClip clip; 
+    public AudioClip clip2;
+
     private void Start()
     {
-        _loadupTruce = GameObject.FindWithTag("Player").GetComponent<TimeFreeze>().loadupTruce;
-        StartCoroutine(FirePause(_loadupTruce));
+        loadupTruce = TimeFreeze.loadupTruce;
+        StartCoroutine(FirePause(loadupTruce));
     }
     
     public void Equip(GameObject Equipper)
@@ -49,8 +49,10 @@ public class Fire : MonoBehaviour
             bullet = Instantiate(original: prefabBullet, position: spawnPoint, rotation: shootDirection); //, parent: bulletSpawnPoint);
 
             //shoot bullet
+          
             Vector3 force = bulletImpuls * bullet.transform.forward.normalized;
             bullet.GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
+            shootAudio.PlayOneShot(clip, 1f);
 
             StartCoroutine(FirePause(1/fireRate));
         }

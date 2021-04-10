@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 public class BulletBehavior : MonoBehaviour
@@ -24,7 +21,5 @@ public class BulletBehavior : MonoBehaviour
         {
             //to be filled later on with object collision
         }
-
-
     }
 }

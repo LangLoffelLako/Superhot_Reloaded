@@ -1,31 +1,32 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public CharacterController Controller;
     public float speed = 12f;
 
-    [SerializeField]
-    private GameObject weapon; 
+    public GameObject weapon; 
     
     public float gravity = -9.81f;
     public float jumpHeight = 3f;
     private Vector3 velocity;
 
+    public float enemyDetectionRadius = 1f;
+    
     private void Start()
     {
        //equip possible weapon
         if (weapon != null)
         {
             weapon.transform.Find("Rifle").GetComponent<Fire>().Equip(gameObject);
+            Debug.Log("Weapon equipped");
         }
     }
+    
 
     void Update()
     {
+        
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
@@ -42,5 +43,23 @@ public class PlayerController : MonoBehaviour
 
         Controller.Move(move * speed * Time.deltaTime);
         Controller.Move(velocity * Time.deltaTime);
+        
+        DidTouch(transform.position, enemyDetectionRadius);
     }
+
+    void DidTouch(Vector3 center, float radius)
+    {
+        Collider[] hitcolliders = Physics.OverlapSphere(center, radius);
+
+        foreach (var hitcollider in hitcolliders)
+        {
+            if (hitcollider.gameObject.tag == "Enemy")
+            {
+                Debug.Log("Touched Player");
+                PlayerEventManager.onShot.Invoke();
+            }
+        }
+    }
+
+   
 }

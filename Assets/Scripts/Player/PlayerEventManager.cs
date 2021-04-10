@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,8 +7,7 @@ public class PlayerEventManager : MonoBehaviour
    public static UnityEvent onShot;
    public static UnityEvent onFire;
    public static UnityEvent onDefeatedEnemies;
-
-   public static bool isGameOver = false;
+   public int roomNumber;
    private GameObject remainingEnemy;
 
    private void OnEnable()
@@ -42,7 +39,6 @@ public class PlayerEventManager : MonoBehaviour
       remainingEnemy = GameObject.FindWithTag("Enemy");
       if (remainingEnemy == null)
       {
-         Debug.Log("You won!");
          onDefeatedEnemies.Invoke();
       }
    }
@@ -59,14 +55,24 @@ public class PlayerEventManager : MonoBehaviour
 
    private void GameOver()
    {
-      if (!isGameOver)
+      if (roomNumber == 1)
       {
-         isGameOver = true;
+         StartCoroutine(WaitThenClose());
+      }
+      else if (roomNumber == 2)
+      {
+         UIManager.shotsTaken += 1;
+         remainingEnemy = GameObject.FindWithTag("Enemy");
+         if (remainingEnemy == null)
+         {
+            StartCoroutine(WaitThenClose());
+         }
       }
    }
 
-   private void Continue()
+   private IEnumerator WaitThenClose()
    {
-      isGameOver = false;
+      yield return new WaitForSeconds(2);
+      Application.Quit();
    }
 }
